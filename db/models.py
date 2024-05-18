@@ -5,7 +5,6 @@ from sqlalchemy.orm import relationship,Mapped,mapped_column
 from typing import List,Optional
 from sqlalchemy.sql import func
 
-
 class GenderEnum(Enum):
     FEMALE = "FEMALE"
     MALE = "MALE"
@@ -14,7 +13,6 @@ class GenderEnum(Enum):
 class TypeEnum(Enum):
     APARTMENT = "APARTMENT"
     HOUSE = "HOUSE"
-
 
 class User(Base):
     __tablename__ = 'users'
@@ -25,7 +23,7 @@ class User(Base):
     email                = Column(String, unique=True, nullable=False)
     hashed_password      = Column(String, nullable=False)
     DoB                  = Column(DateTime, nullable=True, default=None)
-    gender               = Column(GenderEnum, default=GenderEnum.NOT_SPECIFIED)
+    gender               = Column(String, default=GenderEnum.NOT_SPECIFIED)
     createdAt            = Column(DateTime, default=func.now())
     updatedAt            = Column(DateTime, default=func.now(), onupdate=func.now())
 
@@ -51,3 +49,4 @@ class Listing(Base):
     def __repr__(self):
         return f"<{self.owner.username} : {self.address}"
 
+ 
