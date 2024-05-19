@@ -3,20 +3,24 @@ from db.models import User
 from utils.secrets import password_manager
 from exceptions import UserNotFoundError, UserAlreadyExists, UserAuthenticationError
 import sqlalchemy as sa
-from schema.output import RegisterOutput, UserOutput
+from schema.output import UserOutput
 from sqlalchemy.exc import IntegrityError
-from utils.jwt import JWTHandler
+from utils.auth import JWTHandler
 
 class UsersOperation:
     def __init__(self, db_session:AsyncSession) -> None:
         self.db_session = db_session
 
-    async def create(self,username:str,email:str,password:str):
-        user_pwd = password_manager.hash(password)
-        user = User()
-        user.username = username
-        user.email    = email
-        user.password = user_pwd
+
+    async def create(self, data):
+        user_pwd             = password_manager.hash_password(data["password"])
+        user                 = User()
+        user.fullname        = data["fullname"]
+        user.username        = data["username"]
+        user.email           = data["email"]
+        user.hashed_password = user_pwd
+        user.DoB             = data["DoB"]
+        user.gender          = data["gender"]
         async with self.db_session as session:
             try:
                 session.add(user)
@@ -24,9 +28,11 @@ class UsersOperation:
             except IntegrityError:
                 raise UserAlreadyExists
 
-        return RegisterOutput(username=user.username,id=user.id)
+        return UserOutput.model_validate(user.__dict__)
     
-    async def get_user_by_username(self, username: str) -> User:
+
+
+    async def get_user_profile(self, username: str) -> User:
         query = sa.select(User).where(User.username == username)
         async with self.db_session as session:
             user_data = await session.scalar(query)
@@ -34,17 +40,14 @@ class UsersOperation:
             if user_data is None:
                 raise UserNotFoundError
 
-            return UserOutput(username = user_data.username, email = user_data.email,
-                              is_staff = user_data.is_staff, is_active = user_data.is_active,
-                              id = user_data.id)
+            return UserOutput.model_validate(user_data.__dict__)
         
-    async def update_username(self, old_username: str, new_username: str) -> User:
-        query = sa.select(User).where(User.username == old_username)
-        update_query = (
-            sa.update(User)
-            .where(User.username == old_username)
-            .values(username=new_username)
-        )
+
+
+    async def update(self, username, data) -> User:
+        query = sa.select(User).where(User.username == username)
+        update_query = sa.update(User).where(User.username == username).values(**data)
+        
         async with self.db_session as session:
             user_data = await session.scalar(query)
 
@@ -54,9 +57,27 @@ class UsersOperation:
             await session.execute(update_query)
             await session.commit()
 
-            user_data.username = new_username
+            return UserOutput.model_validate(user_data.__dict__)
+
+
+    async def update_password(self, username, data) -> User:
+        query = sa.select(User).where(User.username == username)
+        update_query = sa.update(User).where(User.username == username).values(hashed_password = password_manager.hash_password(data['password_1']))
+        
+        async with self.db_session as session:
+            user_data = await session.scalar(query)
+
+            if user_data is None:
+                raise UserNotFoundError
+            if not password_manager.verify(data['old_password'],user_data.hashed_password):
+                raise UserAuthenticationError
+            
+            await session.execute(update_query)
+            await session.commit()
+            
             return user_data
         
+
     async def user_delete_account(self, username:str)-> None:
 
         delete_query = sa.delete(User).where(User.username==username)
@@ -65,17 +86,18 @@ class UsersOperation:
             await session.execute(delete_query)
             await session.commit()
     
+
+
     async def login(self, username:str, password:str)-> str:
         query = sa.select(User).where(User.username == username)
-
         async with self.db_session as session:
             user = await session.scalar(query)
-            
             if user is None:
                 raise UserAuthenticationError
 
-            if not password_manager.verify(password,user.password):
+            if not password_manager.verify(password,user.hashed_password):
                 raise UserAuthenticationError
             
             return JWTHandler.generate(username)
- 
+
+
