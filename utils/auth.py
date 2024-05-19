@@ -11,7 +11,7 @@ from sqlalchemy import select
 from db.models import User
 from db.engine import SessionLocal
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/account/login")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/account/token")
 
 class JWTHandler:
     @staticmethod
@@ -54,7 +54,6 @@ class JWTHandler:
             print(e)
             raise credentials_exception
 
-        # check if user exists
         stmt = select(User).where(User.username==username)
         async with SessionLocal() as session:
             user = (await session.execute(stmt)).scalars().first()
