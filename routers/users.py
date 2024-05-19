@@ -7,6 +7,7 @@ from operations.users import UsersOperation
 from schema import jwt
 from utils.auth import JWTHandler
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from utils.utils import successful_login_notification
 
 user_router = APIRouter()
 
@@ -57,4 +58,5 @@ async def user_delete_account(db_session: Annotated[AsyncSession, Depends(get_db
 async def authenticate(db_session: Annotated[AsyncSession, Depends(get_db)],
                               form_data: Annotated[OAuth2PasswordRequestForm, Depends()]):
     token = await UsersOperation(db_session).login(form_data.username,form_data.password)
+    successful_login_notification(form_data.username)
     return token
