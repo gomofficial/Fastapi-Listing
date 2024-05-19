@@ -26,7 +26,7 @@ class User(Base):
     gender               = Column(String, default=GenderEnum.NOT_SPECIFIED)
     createdAt            = Column(DateTime, default=func.now())
     updatedAt            = Column(DateTime, default=func.now(), onupdate=func.now())
-
+    listings = relationship('Listing', back_populates='owner', lazy='subquery')
 
     def __repr__(self):
         return f"<User {self.username}"   
@@ -36,12 +36,10 @@ class Listing(Base):
     __tablename__ = 'listings'
 
     id                   = Column(UUID, primary_key=True, default=uuid4)
-    type                 = Column(TypeEnum, nullable=False)
+    type                 = Column(String, nullable=False)
     availableNow         = Column(Boolean, default = True)
-
     ownerId              = Column(UUID, ForeignKey("users.id",ondelete="CASCADE"), nullable=False)
-    owner                = relationship("User")
-
+    owner                = relationship("User", back_populates='listings', lazy='subquery')
     address              = Column(String, nullable=False)
     createdAt            = Column(DateTime, default=func.now())
     updatedAt            = Column(DateTime, default=func.now(), onupdate=func.now())
