@@ -1,9 +1,10 @@
 from uuid import uuid4
 from .engine import Base
-from sqlalchemy import (UUID, ForeignKey, Column, Table, String, Boolean, DateTime, Enum)
-from sqlalchemy.orm import relationship,Mapped,mapped_column
-from typing import List,Optional
+from sqlalchemy import (UUID, ForeignKey, Column, String, Boolean, Date, Enum, TIMESTAMP)
+from sqlalchemy.orm import relationship
+from typing import List
 from sqlalchemy.sql import func
+import datetime
 
 class GenderEnum(Enum):
     FEMALE = "FEMALE"
@@ -22,14 +23,14 @@ class User(Base):
     fullname             = Column(String, unique=False, nullable=True, default=None)
     email                = Column(String, unique=True, nullable=False)
     hashed_password      = Column(String, nullable=False)
-    DoB                  = Column(DateTime, nullable=True, default=None)
+    DoB                  = Column(Date, nullable=True, default=None)
     gender               = Column(String, default=GenderEnum.NOT_SPECIFIED)
-    createdAt            = Column(DateTime, default=func.now())
-    updatedAt            = Column(DateTime, default=func.now(), onupdate=func.now())
+    createdAt            = Column(TIMESTAMP, default=datetime.datetime.now())
+    updatedAt            = Column(TIMESTAMP, default=datetime.datetime.now(), onupdate=datetime.datetime.now())
     listings = relationship('Listing', back_populates='owner', lazy='subquery')
 
     def __repr__(self):
-        return f"<User {self.username}"   
+        return f"<User {self.username}>"   
 
 
 class Listing(Base):
@@ -41,8 +42,8 @@ class Listing(Base):
     ownerId              = Column(UUID, ForeignKey("users.id",ondelete="CASCADE"), nullable=False)
     owner                = relationship("User", back_populates='listings', lazy='subquery')
     address              = Column(String, nullable=False)
-    createdAt            = Column(DateTime, default=func.now())
-    updatedAt            = Column(DateTime, default=func.now(), onupdate=func.now())
+    createdAt            = Column(TIMESTAMP, default=func.now())
+    updatedAt            = Column(TIMESTAMP, default=func.now(), onupdate=func.now())
 
     def __repr__(self):
         return f"<{self.owner.username} : {self.address}"
