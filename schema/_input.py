@@ -1,5 +1,5 @@
 from pydantic import BaseModel, model_validator
-from datetime import datetime
+from datetime import datetime, date
 from uuid import UUID
 from typing import Union, Optional
 from utils.enums import *
@@ -9,7 +9,7 @@ class RegisterInput(BaseModel):
     password:str         
     fullname: Union[str, None] = None       
     email:str
-    DoB: Union[datetime, None] = None
+    DoB: Union[date, None] = None
     gender: Union[GenderEnum,None] = GenderEnum.NOT_SPECIFIED
 
     @classmethod
@@ -25,7 +25,7 @@ class UpdateUserProfile(BaseModel):
     username:str|None      = None
     fullname:str|None      = None   
     email:str|None         = None
-    DoB:datetime|None      = None
+    DoB:date|None          = None
     gender:GenderEnum|None = None
 
 
