@@ -1,12 +1,18 @@
 from fastapi import FastAPI, Request, Header
 from routers import user_router, listing_router
 from db import engine, Base
-from utils import log
+from utils import (log, )
 from utils.utils import increase_count_file
 from contextlib import asynccontextmanager
-import time
+from fastapi import FastAPI
+from fastapi.middleware.trustedhost import TrustedHostMiddleware
 
 app = FastAPI()
+
+app.add_middleware(
+    TrustedHostMiddleware, allowed_hosts=["localhost:3000"] 
+)
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -15,8 +21,21 @@ async def lifespan(app: FastAPI):
     increase_count_file()
     yield
 
-app = FastAPI(lifespan=lifespan)
-
+app = FastAPI(lifespan=lifespan,
+              title="Listing",
+              description="Listing API for Dornica.",
+              summary="Listing API for Dornica.",
+              version="0.0.1",
+              terms_of_service="http://github.com/gomofficial/",
+              contact={
+                    "name": "GOMOFFICIAL",
+                    "url": "http://gomofficial.github.io/",
+                    "email": "gomofficial@gmail.com",
+                },
+               license_info={
+                    "name": "Apache 2.0",
+                    "url": "https://www.apache.org/licenses/LICENSE-2.0.html",
+                },)
 
 
 app.include_router(user_router, prefix='/account', tags=['account'])
@@ -24,11 +43,19 @@ app.include_router(listing_router, prefix='/listing', tags=['listing'])
 
 
 @app.middleware("http")
-async def add_process_time_header(request: Request, call_next):
+async def request_logger(request: Request, call_next):
     user_ip     = request.client.host
     path        = request.url.path
     requestType = request.method
     log("REQUEST TYPE: ",requestType," PATH: ",path," IP: ",user_ip)
+    response = await call_next(request)
+    
+    return response
+
+@app.middleware("http")
+async def allowed_ip_list(request: Request, call_next):
+    user_ip     = request.client.host
+    
     response = await call_next(request)
     
     return response
