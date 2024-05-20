@@ -8,6 +8,8 @@ from schema import jwt
 from utils.auth import JWTHandler
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from utils.utils import successful_login_notification
+from utils import rate_limit_user
+from fastapi import Request
 
 user_router = APIRouter()
 
@@ -56,7 +58,8 @@ async def user_delete_account(db_session: Annotated[AsyncSession, Depends(get_db
 
 @user_router.post("/token")
 async def authenticate(db_session: Annotated[AsyncSession, Depends(get_db)],
-                              form_data: Annotated[OAuth2PasswordRequestForm, Depends()]):
+                       form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
+                       dependencies = Depends(rate_limit_user)):
     token = await UsersOperation(db_session).login(form_data.username,form_data.password)
     successful_login_notification(form_data.username)
     return token

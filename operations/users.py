@@ -1,7 +1,7 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from db.models import User
 from utils.secrets import password_manager
-from exceptions import UserNotFoundError, UserAlreadyExists, UserAuthenticationError
+from exceptions import (UserNotFoundError, UserAlreadyExists, UserAuthenticationError, EmailAlreadyExists, UsernameAlreadyExists)
 import sqlalchemy as sa
 from schema.output import UserOutput
 from sqlalchemy.exc import IntegrityError
@@ -47,12 +47,26 @@ class UsersOperation:
     async def update(self, username, data) -> User:
         query = sa.select(User).where(User.username == username)
         update_query = sa.update(User).where(User.username == username).values(**data)
-        
-        async with self.db_session as session:
-            user_data = await session.scalar(query)
 
-            if user_data is None:
-                raise UserNotFoundError
+        username = data.get("username")
+        email    = data.get("email")
+        username_query = sa.select(User).where(User.username == username)
+        email_query     = sa.select(User).where(User.email == email)
+
+        async with self.db_session as session:
+            user_data       = await session.scalar(query)
+            if username is not None:
+                username_exists = await session.scalar(username_query)
+
+                if username_exists is not None:
+                    raise UsernameAlreadyExists
+            
+            if email is not None :
+                email_exists    = await session.scalar(email_query)
+
+                if email_exists is not None:
+                    raise EmailAlreadyExists
+
 
             await session.execute(update_query)
             await session.commit()
