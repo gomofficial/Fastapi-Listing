@@ -12,6 +12,16 @@ class UserAlreadyExists(HTTPException):
         self.status_code = status.HTTP_400_BAD_REQUEST
         self.detail="User already exists"
 
+class UsernameAlreadyExists(HTTPException):
+    def __init__(self):
+        self.status_code = status.HTTP_400_BAD_REQUEST
+        self.detail="Username already exists"
+
+class EmailAlreadyExists(HTTPException):
+    def __init__(self):
+        self.status_code = status.HTTP_400_BAD_REQUEST
+        self.detail="Email already exists"
+
 class UserAuthenticationError(HTTPException):
     def __init__(self):
         self.status_code = status.HTTP_400_BAD_REQUEST
@@ -27,3 +37,7 @@ class InvalidPermission(HTTPException):
         self.status_code = status.HTTP_400_BAD_REQUEST
         self.detail="you dont have permission"
 
+class RateLimitException(HTTPException):
+    def __init__(self):
+        self.status_code = status.HTTP_429_TOO_MANY_REQUESTS
+        self.detail="Too Many Requests"
