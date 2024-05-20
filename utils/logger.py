@@ -10,3 +10,11 @@ logger = logging.getLogger('request logger')
 def log(*args):
     list ="".join(map(str,[arg for arg in args]))
     logger.info(f"LOG: {list}")
+
+ 
+
+
+
+
+
+ 
