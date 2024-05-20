@@ -1,4 +1,6 @@
 from datetime import datetime
+
+
 def successful_login_notification(username: str):
     print(f"successful login at {datetime.now()} - {username}")
 
@@ -10,5 +12,4 @@ def increase_count_file():
         count_file.truncate(0)
         count_file.seek(0)
         count_file.write(f"{number}\n")
-
 
