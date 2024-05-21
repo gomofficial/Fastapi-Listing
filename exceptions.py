@@ -41,3 +41,13 @@ class RateLimitException(HTTPException):
     def __init__(self):
         self.status_code = status.HTTP_429_TOO_MANY_REQUESTS
         self.detail="Too Many Requests"
+
+class DeviceLimitException(HTTPException):
+    def __init__(self):
+        self.status_code = status.HTTP_429_TOO_MANY_REQUESTS
+        self.detail="Can not login with 2 or more devices"
+
+class AuthenticationException(HTTPException):
+    def __init__(self):
+        self.status_code = status.HTTP_429_TOO_MANY_REQUESTS
+        self.detail="you are not logged in"
