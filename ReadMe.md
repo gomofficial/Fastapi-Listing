@@ -5,7 +5,7 @@
 The first thing to do is to clone the repository:
 
 ```sh
-$ git clone https://github.com/gomofficial/social-media.git
+$ git clone https://github.com/gomofficial/Fastapi-project.git
 ```
 
 Create a virtual environment to install dependencies in and activate it:
@@ -47,4 +47,6 @@ then view the site at  http://localhost:8000/
 
 ## Features
  rest api using fastapi,
- jwt authentications
+ jwt authentications,
+ celery,
+ redis,
