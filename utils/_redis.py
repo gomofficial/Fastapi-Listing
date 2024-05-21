@@ -1,7 +1,7 @@
 from redis.asyncio import Redis
 from fastapi import Request
 from datetime import datetime, timedelta
-from exceptions import RateLimitException
+from exceptions import RateLimitException, DeviceLimitException, AuthenticationException
 
 
 redis = Redis(host='redis', port=6379, db=0)
@@ -28,11 +28,26 @@ async def rate_limit_user(request: Request):
     print(request.client.host)
     return True
 
+async def set_device_token(token, username):
+    try:
+        now = datetime.now()
+        redis_key = f"{username}"
+        # print(token)
+        await redis.set(redis_key, token)
+        await redis.expireat(name=redis_key, when=now + timedelta(minutes=30))
+    except Exception as e:
+        print(e)
 
-async def allowed_ip(request: Request):
-    userIp = request.client.host
-
-    redis_key = f"allowed_ip_list"
-
+async def verify_device(token, username):
+    redis_key = f"{username}"
+    device_token =await redis.get(redis_key)
+    if device_token is None:
+        raise AuthenticationException()
+    elif token != str(device_token.decode()):
+        raise DeviceLimitException()
     return True
 
+
+async def delete_key(key):
+    redis_key = f"{key}"
+    await redis.delete(key)

@@ -10,6 +10,7 @@ from jose import JWTError
 from sqlalchemy import select
 from db.models import User
 from db.engine import SessionLocal
+from ._redis import *
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/account/token")
 
@@ -27,8 +28,7 @@ class JWTHandler:
             "username": username,
         }
         encoded_jwt = jwt.encode(to_encode, secret_key, ALGORITHM)
-
-        return JWTResponsePayload(access_token=encoded_jwt)
+        return encoded_jwt
 
     @staticmethod
     async def verify_token(auth_token: Annotated[str, Depends(oauth2_scheme)]) -> JWTPayload:
@@ -53,7 +53,7 @@ class JWTHandler:
         except JWTError as e:
             print(e)
             raise credentials_exception
-
+        print(await verify_device(jwt_token,username))
         stmt = select(User).where(User.username==username)
         async with SessionLocal() as session:
             user = (await session.execute(stmt)).scalars().first()
