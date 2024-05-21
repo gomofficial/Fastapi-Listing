@@ -164,6 +164,4 @@ cython_debug/
 #.idea/
 fastapi_listing.db
 count.txt
-count.txt
-fastapi_listing.db
 forcast.csv
