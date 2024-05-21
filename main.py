@@ -1,11 +1,13 @@
 from fastapi import FastAPI, Request, Header
-from routers import user_router, listing_router
+from routers import user_router, listing_router, bots_router
 from db import engine, Base
 from utils import (log, )
 from utils.utils import increase_count_file
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
+from utils.celery_worker import weather_forcast
+
 
 app = FastAPI()
 
@@ -40,6 +42,7 @@ app = FastAPI(lifespan=lifespan,
 
 app.include_router(user_router, prefix='/account', tags=['account'])
 app.include_router(listing_router, prefix='/listing', tags=['listing'])
+app.include_router(bots_router, prefix='/bots', tags=['bots'])
 
 
 @app.middleware("http")
@@ -52,10 +55,11 @@ async def request_logger(request: Request, call_next):
     
     return response
 
-@app.middleware("http")
-async def allowed_ip_list(request: Request, call_next):
-    user_ip     = request.client.host
+# @app.middleware("http")
+# async def allowed_ip_list(request: Request, call_next):
+#     user_ip     = request.client.host
     
-    response = await call_next(request)
+#     response = await call_next(request)
     
-    return response
+#     return response
+
