@@ -11,7 +11,6 @@ class UsersOperation:
     def __init__(self, db_session:AsyncSession) -> None:
         self.db_session = db_session
 
-
     async def create(self, data):
         user_pwd             = password_manager.hash_password(data["password"])
         user                 = User()

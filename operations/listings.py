@@ -39,7 +39,6 @@ class ListingOperation:
                              createdAt=listing.createdAt, updatedAt=listing.updatedAt)
     
     async def get_list(self):
-
         listing_query = sa.select(Listing)
 
         async with self.db_session as session:
