@@ -8,9 +8,9 @@ from schema._input import RegisterInput, UpdateUserProfile
 from utils.enums import GenderEnum
 
 
-def user_authentication_headers(*, client: TestClient, username: str, password: str) -> Dict[str, str]:
+async def user_authentication_headers(*, client: TestClient, username: str, password: str) -> Dict[str, str]:
     data = {"username": username, "password": password}
-    re = client.post("/account/token", data=data)
+    re =await client.post("/account/token", data=data)
     response = re.json()
     auth_token = response["access_token"]
     headers = {"Authorization": f"Bearer {auth_token}"}

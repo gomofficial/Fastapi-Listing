@@ -1,20 +1,13 @@
-import os, sys, inspect
-current_dir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
-parent_dir = os.path.dirname(current_dir)
-sys.path.insert(0, parent_dir)
-
-
 from main import app
-from utils.test_engine import client
+from test_utils.test_engine import client
 from fastapi.testclient import TestClient
 
-from utils.test_engine import TestingSessionLocal
-from utils.users import  user_authentication_headers, get_random_user_update, get_random_user
+from test_utils.test_engine import TestingSessionLocal
+from test_utils.users import  user_authentication_headers, get_random_user_update, get_random_user
 from main import app
 from routers import UsersOperation
 
-# from config import settings
-# from utils.utils import random_lower_string
+
 
 client = TestClient(app)
 

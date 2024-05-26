@@ -7,9 +7,9 @@ sys.path.insert(0, parent_dir)
 import json
 from fastapi.testclient import TestClient
 
-from tests.utils.test_engine import TestingSessionLocal
-from tests.utils.users import  user_authentication_headers, get_random_user
-from tests.utils.listing import get_random_listing
+from tests.test_utils.test_engine import TestingSessionLocal
+from tests.test_utils.users import  user_authentication_headers, get_random_user
+from tests.test_utils.listing import get_random_listing
 
 from main import app
 from operations.users import UsersOperation

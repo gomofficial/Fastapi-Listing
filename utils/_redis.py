@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 from exceptions import RateLimitException, DeviceLimitException, AuthenticationException
 
 
-redis = Redis(host='redis', port=6379, db=0)
+redis = Redis(host='localhost', port=6379, db=0)
 
 
 async def rate_limit_user(request: Request):
