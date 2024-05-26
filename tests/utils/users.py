@@ -23,10 +23,8 @@ def get_random_user():
         username =   random_lower_string(),
         full_name=  random_lower_string(),
         email    =      random_email(),
-        password1=  pwd,
-        password2=  pwd,
-        gender   =     GenderEnum.MAIL.name,
-        DoB      =        random_date().strftime("%Y-%m-%d"),
+        password =  pwd,
+        gender   =     GenderEnum.MALE,
     )
 
 
@@ -36,7 +34,6 @@ def get_random_user_update():
         full_name=  random_lower_string(),
         email    =      random_email(),
         gender   =     GenderEnum.MAIL.name,
-        DoB      =        random_date().strftime("%Y-%m-%d"),
     )
     del re.password
     return re
