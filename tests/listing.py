@@ -31,11 +31,11 @@ global_response2 = client.post(
     content=global_user_in2.json()
 )
 db = TestingSessionLocal()
-global_user_db = UsersOperation.get_user(db, username=global_user_in.username)
-global_user_db2 = UsersOperation.get_user(db, username=global_user_in2.username)
+global_user_db = UsersOperation.get_user_profile(db, username=global_user_in.username)
+global_user_db2 = UsersOperation.get_user_profile(db, username=global_user_in2.username)
 db.close()
-headers = user_authentication_headers(client=client, username=global_user_in.username, password=global_user_in.password1)
-headers2 = user_authentication_headers(client=client, username=global_user_in2.username, password=global_user_in2.password1)
+headers = user_authentication_headers(client=client, username=global_user_in.username, password=global_user_in.password)
+headers2 = user_authentication_headers(client=client, username=global_user_in2.username, password=global_user_in2.password)
 
 
 def test_read_listings():

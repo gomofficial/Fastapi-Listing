@@ -27,7 +27,7 @@ def test_register():
         f"/account/register/",
         content=user_in.json()
     )
-    user_db = user_crud.get_user(db, username=user_in.username)
+    user_db = user_crud.get_user_profile(db, username=user_in.username)
     db.close()
     assert response.status_code == 201
     assert user_db.email == user_in.email

@@ -12,19 +12,19 @@ def user_authentication_headers(*, client: TestClient, username: str, password: 
     data = {"username": username, "password": password}
     re = client.post("/account/", data=data)
     response = re.json()
-    auth_token = response["access_token"]
+    auth_token = responset
     headers = {"Authorization": f"Bearer {auth_token}"}
     return headers
 
 
 def get_random_user():
-    pwd = random_lower_string()
+    pwd = random_lower_string()+"S"
     return RegisterInput(
-        username =   random_lower_string(),
-        full_name=  random_lower_string(),
-        email    =      random_email(),
-        password =  pwd,
-        gender   =     GenderEnum.MALE,
+        username  =   random_lower_string(),
+        full_name =  random_lower_string(),
+        email     =      random_email(),
+        password  =  pwd,
+        gender    =     GenderEnum.MALE,
     )
 
 

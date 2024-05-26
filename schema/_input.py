@@ -28,7 +28,7 @@ class RegisterInput(BaseModel):
         start_date = date(1948, 1, 1)
         end_date = date.today()
 
-        if start_date <= datetime.strptime(values.get("DoB"), '%Y-%m-%d').date() <= end_date:
+        if values.get("DoB") is None or start_date <= datetime.strptime(values.get("DoB"), '%Y-%m-%d').date() <= end_date:
             return values
         else:
             raise ValueError("Invalid Birth Date")
