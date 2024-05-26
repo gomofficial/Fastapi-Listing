@@ -26,7 +26,7 @@ Once `pip` has finished downloading the dependencies:
 (env)$ uvicorn main:app
 ```
 
-And navigate to `http://127.0.0.1:8000/`.
+And navigate to `http://127.0.0.1:3000/`.
 
 ## Running Locally with Docker
 
