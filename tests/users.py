@@ -25,7 +25,7 @@ def test_register():
     user_in = get_random_user()
     response = client.post(
         f"/account/register/",
-        content=user_in.json()
+        content=user_in.model_dump_json()
     )
     user_db = user_crud.get_user_profile(db, username=user_in.username)
     db.close()
@@ -36,13 +36,13 @@ def test_register_existing_username():
     user_in = get_random_user()
     response = client.post(
         f"/account/register/",
-        content=user_in.json()
+        content=user_in.model_dump_json()
     )
     new_user_in = get_random_user()
     new_user_in.username = user_in.username
     response_exising_username = client.post(
         f"/account/register/",
-        content=user_in.json()
+        content=user_in.model_dump_json()
     )
     assert response.status_code == 201
     assert response_exising_username.status_code == 400
@@ -51,7 +51,7 @@ def test_login():
     user_in = get_random_user()
     response = client.post(
         f"/account/register/",
-        content=user_in.json()
+        content=user_in.model_dump_json()
     )
     login_response = client.post(
         f"/account/token/",
@@ -74,7 +74,7 @@ def test_no_login():
     user_in = get_random_user()
     response = client.post(
         f"/account/register/",
-        content=user_in.json()
+        content=user_in.model_dump_json()
     )
     login_response = client.post(
         f"/account/token/",
@@ -91,7 +91,7 @@ def test_read_user():
     user_in = get_random_user()
     response = client.post(
         f"/account/register/",
-        content=user_in.json()
+        content=user_in.model_dump_json()
     )
     headers = user_authentication_headers(client=client, username=user_in.username, password=user_in.password1)
     response = client.get(
@@ -105,12 +105,12 @@ def test_read_users_access_denied():
     user_in1 = get_random_user()
     response = client.post(
         f"/account/register/",
-        content=user_in1.json()
+        content=user_in1.model_dump_json()
     )
     user_in2 = get_random_user()
     response = client.post(
         f"/account/register/",
-        content=user_in2.json()
+        content=user_in2.model_dump_json()
     )
     headers = user_authentication_headers(client=client, username=user_in1.username, password=user_in1.password1)
     response = client.get(
@@ -124,7 +124,7 @@ def test_read_users_not_authenticated():
     user_in = get_random_user()
     register_response = client.post(
         f"/account/register/",
-        content=user_in.json()
+        content=user_in.model_dump_json()
     )
     response = client.get(
         f"/account/",
@@ -140,7 +140,7 @@ def test_update_user_information():
     user_in = get_random_user()
     register_response = client.post(
         f"/account/register/",
-        content=user_in.json()
+        content=user_in.model_dump_json()
     )
 
     headers = user_authentication_headers(client=client, username=user_in.username, password=user_in.password1)
@@ -148,7 +148,7 @@ def test_update_user_information():
     put_response = client.put(
         f"/account/",
         headers=headers,
-        content=user_in_update.json()
+        content=user_in_update.model_dump_json()
     )
     
     db_user_updated = user_crud.get_user(db, username=user_in_update.username)

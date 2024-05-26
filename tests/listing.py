@@ -5,7 +5,6 @@ sys.path.insert(0, parent_dir)
 
 
 import json
-
 from fastapi.testclient import TestClient
 
 from tests.utils.test_engine import TestingSessionLocal
@@ -23,12 +22,12 @@ client = TestClient(app)
 global_user_in = get_random_user()
 global_response = client.post(
     f"/listing/",
-    content=global_user_in.json()
+    content=global_user_in.model_dump_json()
 )
 global_user_in2 = get_random_user()
 global_response2 = client.post(
     f"/listing/",
-    content=global_user_in2.json()
+    content=global_user_in2.model_dump_json()
 )
 db = TestingSessionLocal()
 global_user_db = UsersOperation.get_user_profile(db, username=global_user_in.username)
@@ -43,7 +42,7 @@ def test_read_listings():
 
     response = client.post(
         "/listings/",
-        content=listing_in.json(),
+        content=listing_in.model_dump_json(),
         headers=headers
     )
     response_get = client.get(
@@ -62,7 +61,7 @@ def test_read_single_listing():
     listing_in = get_random_listing()
     response = client.post(
         "/listings/",
-        content=listing_in.json(),
+        content=listing_in.model_dump_json(),
         headers=headers
     )
     post_re_con = json.loads(response.content.decode('utf-8'))
@@ -77,14 +76,14 @@ def test_put_listing():
     listing_in = get_random_listing()
     response = client.post(
         "/listings/",
-        content=listing_in.json(),
+        content=listing_in.model_dump_json(),
         headers=headers
     )
     post_re_con = json.loads(response.content.decode('utf-8'))
     listing_in = get_random_listing()
     response_put = client.put(
         f"/listings/{post_re_con['id']}",
-        content=listing_in.json(),
+        content=listing_in.model_dump_json(),
         headers=headers
     )
     put_re_con = json.loads(response_put.content.decode('utf-8'))
@@ -100,7 +99,7 @@ def test_delete_listing():
     listing_in = get_random_listing()
     response = client.post(
         "/listings/",
-        content=listing_in.json(),
+        content=listing_in.model_dump_json(),
         headers=headers
     )
     post_re_con = json.loads(response.content.decode('utf-8'))
@@ -120,7 +119,7 @@ def test_access_denied_put_listing():
     listing_in = get_random_listing()
     response = client.post(
         "/listings/",
-        content=listing_in.json(),
+        content=listing_in.model_dump_json(),
         headers=headers
     )
     post_re_con = json.loads(response.content.decode('utf-8'))
@@ -128,7 +127,7 @@ def test_access_denied_put_listing():
     response_put = client.put(
         f"/listings/{post_re_con['id']}",
         headers=headers2,
-        content=listing_in.json()
+        content=listing_in.model_dump_json()
     )
     assert response.status_code == 201
     assert response_put.status_code == 403
@@ -138,7 +137,7 @@ def test_access_denied_delete_listing():
     listing_in = get_random_listing()
     response = client.post(
         "/listings/",
-        content=listing_in.json(),
+        content=listing_in.model_dump_json(),
         headers=headers
     )
     post_re_con = json.loads(response.content.decode('utf-8'))
