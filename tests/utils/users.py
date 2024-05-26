@@ -3,15 +3,14 @@ from datetime import datetime
 
 from fastapi.testclient import TestClient
 
-from app.tests.utils.utils import random_email, random_lower_string, random_date
-from app.schemas import UserCreateSchema, UserUpdateSchema
-from app.models.user import GenderEnum
-from app.core.config import settings
+from .test_utils import random_email, random_lower_string, random_date
+from schema._input import RegisterInput, UpdateUserProfile 
+from utils.enums import GenderEnum
 
 
 def user_authentication_headers(*, client: TestClient, username: str, password: str) -> Dict[str, str]:
     data = {"username": username, "password": password}
-    re = client.post(f"{settings.AUTH_ROUTE_PREFIX}/token/", data=data)
+    re = client.post("/account/", data=data)
     response = re.json()
     auth_token = response["access_token"]
     headers = {"Authorization": f"Bearer {auth_token}"}
@@ -20,27 +19,27 @@ def user_authentication_headers(*, client: TestClient, username: str, password: 
 
 def get_random_user():
     pwd = random_lower_string()
-    return UserCreateSchema(
-        username=   random_lower_string(),
+    return RegisterInput(
+        username =   random_lower_string(),
         full_name=  random_lower_string(),
-        email=      random_email(),
+        email    =      random_email(),
         password1=  pwd,
         password2=  pwd,
-        gender=     GenderEnum.MAIL.name,
-        BoD=        random_date().strftime("%Y-%m-%d"),
+        gender   =     GenderEnum.MAIL.name,
+        DoB      =        random_date().strftime("%Y-%m-%d"),
     )
 
 
 def get_random_user_update():
-    re = UserUpdateSchema(
-        username=   random_lower_string(),
+    re = UpdateUserProfile(
+        username =   random_lower_string(),
         full_name=  random_lower_string(),
-        email=      random_email(),
-        gender=     GenderEnum.MAIL.name,
-        BoD=        random_date().strftime("%Y-%m-%d"),
+        email    =      random_email(),
+        gender   =     GenderEnum.MAIL.name,
+        DoB      =        random_date().strftime("%Y-%m-%d"),
     )
     del re.password
     return re
     
 def get_user_update(**kwargs):
-    return UserUpdateSchema(**kwargs)
+    return UpdateUserProfile(**kwargs)

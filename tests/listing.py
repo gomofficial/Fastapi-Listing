@@ -1,10 +1,16 @@
+import os, sys, inspect
+current_dir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+parent_dir = os.path.dirname(current_dir)
+sys.path.insert(0, parent_dir)
+
+
 import json
 
 from fastapi.testclient import TestClient
 
-from utils.test_engine import TestingSessionLocal
-from utils.users import  user_authentication_headers, get_random_user
-from utils.listing import get_random_listing
+from tests.utils.test_engine import TestingSessionLocal
+from tests.utils.users import  user_authentication_headers, get_random_user
+from tests.utils.listing import get_random_listing
 
 from main import app
 from operations.users import UsersOperation
@@ -16,12 +22,12 @@ client = TestClient(app)
 
 global_user_in = get_random_user()
 global_response = client.post(
-    f"/account/register/",
+    f"/listing/",
     content=global_user_in.json()
 )
 global_user_in2 = get_random_user()
 global_response2 = client.post(
-    f"/account/register/",
+    f"/listing/",
     content=global_user_in2.json()
 )
 db = TestingSessionLocal()

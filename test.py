@@ -1,5 +1,10 @@
-from .listing import *
-from .users import *
+import os, sys, inspect
+current_dir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+parent_dir = os.path.dirname(current_dir)
+sys.path.insert(0, parent_dir)
+
+from tests.listing import *
+from tests.users import *
 
 test_update_user_information()
 test_read_users_not_authenticated()
