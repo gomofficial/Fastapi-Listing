@@ -3,7 +3,7 @@ from datetime import datetime
 
 from fastapi.testclient import TestClient
 
-from .users import random_email, random_lower_string, random_date
+from .user_utils import random_email, random_lower_string, random_date
 from schema._input import ListingInput
 from utils.enums import TypeEnum
 

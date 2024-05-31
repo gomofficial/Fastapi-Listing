@@ -1,1 +1,0 @@
-from schema._input import RegisterInput, UpdateUserProfile 
