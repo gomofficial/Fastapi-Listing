@@ -1,15 +1,11 @@
 from main import app
 from .test_engine import client
-from fastapi.testclient import TestClient
 
 from .test_engine import TestingSessionLocal
 from tests.user_utils import  user_authentication_headers, get_random_user_update, get_random_user
 from main import app
 from routers.users import UsersOperation
 
-
-
-client = TestClient(app)
 
 
 async def register():
@@ -20,7 +16,7 @@ async def register():
         f"/account/register/",
         content=user_in.model_dump_json()
     )
-    user_db = user_crud.get_user_profile(db, username=user_in.username)
+    user_db = user_crud.get_user_profile(username=user_in.username)
     db.close()
     assert response.status_code == 201
     assert user_db.email == user_in.email

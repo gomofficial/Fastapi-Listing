@@ -2,10 +2,9 @@ import os, sys, inspect
 current_dir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parent_dir = os.path.dirname(current_dir)
 sys.path.insert(0, parent_dir)
-
+import asyncio
 
 import json
-from fastapi.testclient import TestClient
 
 from tests.test_engine import TestingSessionLocal
 from tests.user_utils import  user_authentication_headers, get_random_user
@@ -15,8 +14,7 @@ from main import app
 from operations.users import UsersOperation
 from operations.listings import ListingOperation
 
-client = TestClient(app)
-
+from .test_engine import client
 
 
 global_user_in = get_random_user()
@@ -32,7 +30,7 @@ global_response2 = client.post(
 db = TestingSessionLocal()
 global_user_db = UsersOperation.get_user_profile(db, username=global_user_in.username)
 global_user_db2 = UsersOperation.get_user_profile(db, username=global_user_in2.username)
-db.close()
+asyncio.run(db.close())
 # headers  = user_authentication_headers(client=client, username=global_user_in.username, password=global_user_in.password)
 # headers2 = user_authentication_headers(client=client, username=global_user_in2.username, password=global_user_in2.password)
 
@@ -43,7 +41,7 @@ async def read_listings():
     response = client.post(
         "/listings/",
         content=listing_in.model_dump_json(),
-        headers=headers
+        headers= await user_authentication_headers(client=client, username=global_user_in.username, password=global_user_in.password)
     )
     response_get = client.get(
         "/listings/"
@@ -120,7 +118,7 @@ async def access_denied_put_listing():
     response = client.post(
         "/listings/",
         content=listing_in.model_dump_json(),
-        headers=headers
+        headers=await user_authentication_headers(client=client, username=global_user_in.username, password=global_user_in.password)
     )
     post_re_con = json.loads(response.content.decode('utf-8'))
     listing_in = get_random_listing()
@@ -138,7 +136,7 @@ async def access_denied_delete_listing():
     response = client.post(
         "/listings/",
         content=listing_in.model_dump_json(),
-        headers=headers
+        headers=await user_authentication_headers(client=client, username=global_user_in.username, password=global_user_in.password)
     )
     post_re_con = json.loads(response.content.decode('utf-8'))
     response_delete = client.delete(

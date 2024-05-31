@@ -55,11 +55,4 @@ async def request_logger(request: Request, call_next):
     
     return response
 
-# @app.middleware("http")
-# async def allowed_ip_list(request: Request, call_next):
-#     user_ip     = request.client.host
-    
-#     response = await call_next(request)
-    
-#     return response
 
