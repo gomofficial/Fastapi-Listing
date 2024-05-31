@@ -12,7 +12,7 @@ from routers.users import UsersOperation
 client = TestClient(app)
 
 
-def test_register():
+async def register():
     db = TestingSessionLocal()
     user_crud = UsersOperation(db)
     user_in = get_random_user()
@@ -25,7 +25,7 @@ def test_register():
     assert response.status_code == 201
     assert user_db.email == user_in.email
 
-def test_register_existing_username():
+async def register_existing_username():
     user_in = get_random_user()
     response = client.post(
         f"/account/register/",
@@ -40,7 +40,7 @@ def test_register_existing_username():
     assert response.status_code == 201
     assert response_exising_username.status_code == 400
 
-def test_login():
+async def login():
     user_in = get_random_user()
     response = client.post(
         f"/account/register/",
@@ -50,7 +50,7 @@ def test_login():
         f"/account/token/",
         data={
             'username': user_in.username,
-            'password': user_in.password1
+            'password': user_in.password
         }
     )
     assert response.status_code==201
@@ -63,7 +63,7 @@ def test_login():
     assert tokens["refresh_token"]
 
 
-def test_no_login():
+async def no_login():
     user_in = get_random_user()
     response = client.post(
         f"/account/register/",
@@ -73,20 +73,20 @@ def test_no_login():
         f"/account/token/",
         data={
             'username': user_in.username,
-            'password': user_in.password1+' fake'
+            'password': user_in.password+' fake'
         }
     )
     assert response.status_code==201
     assert login_response.status_code==401
 
 
-def test_read_user():
+async def read_user():
     user_in = get_random_user()
     response = client.post(
         f"/account/register/",
         content=user_in.model_dump_json()
     )
-    headers = user_authentication_headers(client=client, username=user_in.username, password=user_in.password1)
+    headers = await user_authentication_headers(client=client, username=user_in.username, password=user_in.password)
     response = client.get(
         f"/account/",
         headers=headers
@@ -94,7 +94,7 @@ def test_read_user():
     assert response.status_code==200
 
 
-def test_read_users_access_denied():
+async def read_users_access_denied():
     user_in1 = get_random_user()
     response = client.post(
         f"/account/register/",
@@ -105,7 +105,7 @@ def test_read_users_access_denied():
         f"/account/register/",
         content=user_in2.model_dump_json()
     )
-    headers = user_authentication_headers(client=client, username=user_in1.username, password=user_in1.password1)
+    headers = await user_authentication_headers(client=client, username=user_in1.username, password=user_in1.password)
     response = client.get(
         f"/account/",
         headers=headers
@@ -113,7 +113,7 @@ def test_read_users_access_denied():
     assert response.status_code==403
 
 
-def test_read_users_not_authenticated():
+async def read_users_not_authenticated():
     user_in = get_random_user()
     register_response = client.post(
         f"/account/register/",
@@ -126,7 +126,7 @@ def test_read_users_not_authenticated():
     assert register_response.status_code==201
 
 
-def test_update_user_information():
+async def update_user_information():
     db = TestingSessionLocal()
     user_crud = UsersOperation(db)
     
@@ -136,7 +136,7 @@ def test_update_user_information():
         content=user_in.model_dump_json()
     )
 
-    headers = user_authentication_headers(client=client, username=user_in.username, password=user_in.password1)
+    headers = await user_authentication_headers(client=client, username=user_in.username, password=user_in.password)
     user_in_update = get_random_user_update()
     put_response = client.put(
         f"/account/",

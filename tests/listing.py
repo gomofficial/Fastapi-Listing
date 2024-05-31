@@ -33,11 +33,11 @@ db = TestingSessionLocal()
 global_user_db = UsersOperation.get_user_profile(db, username=global_user_in.username)
 global_user_db2 = UsersOperation.get_user_profile(db, username=global_user_in2.username)
 db.close()
-headers = user_authentication_headers(client=client, username=global_user_in.username, password=global_user_in.password)
-headers2 = user_authentication_headers(client=client, username=global_user_in2.username, password=global_user_in2.password)
+# headers  = user_authentication_headers(client=client, username=global_user_in.username, password=global_user_in.password)
+# headers2 = user_authentication_headers(client=client, username=global_user_in2.username, password=global_user_in2.password)
 
 
-def test_read_listings():
+async def read_listings():
     listing_in = get_random_listing()
 
     response = client.post(
@@ -57,12 +57,12 @@ def test_read_listings():
     assert post_re_con in get_re_con
 
 
-def test_read_single_listing():
+async def read_single_listing():
     listing_in = get_random_listing()
     response = client.post(
         "/listings/",
         content=listing_in.model_dump_json(),
-        headers=headers
+        headers=await user_authentication_headers(client=client, username=global_user_in.username, password=global_user_in.password)
     )
     post_re_con = json.loads(response.content.decode('utf-8'))
     response_get = client.get(
@@ -72,19 +72,19 @@ def test_read_single_listing():
     assert response_get.status_code == 200
 
 
-def test_put_listing():
+async def put_listing():
     listing_in = get_random_listing()
     response = client.post(
         "/listings/",
         content=listing_in.model_dump_json(),
-        headers=headers
+        headers=await user_authentication_headers(client=client, username=global_user_in.username, password=global_user_in.password)
     )
     post_re_con = json.loads(response.content.decode('utf-8'))
     listing_in = get_random_listing()
     response_put = client.put(
         f"/listings/{post_re_con['id']}",
         content=listing_in.model_dump_json(),
-        headers=headers
+        headers=await user_authentication_headers(client=client, username=global_user_in.username, password=global_user_in.password)
     )
     put_re_con = json.loads(response_put.content.decode('utf-8'))
 
@@ -93,19 +93,19 @@ def test_put_listing():
     assert post_re_con['address'] != put_re_con['address']
 
 
-def test_delete_listing():
+async def delete_listing():
     db = TestingSessionLocal()
     listing_crud = ListingOperation(db)
     listing_in = get_random_listing()
     response = client.post(
         "/listings/",
         content=listing_in.model_dump_json(),
-        headers=headers
+        headers=await user_authentication_headers(client=client, username=global_user_in.username, password=global_user_in.password)
     )
     post_re_con = json.loads(response.content.decode('utf-8'))
     response_delete = client.delete(
         f"/listings/{post_re_con['id']}",
-        headers=headers
+        headers=await user_authentication_headers(client=client, username=global_user_in.username, password=global_user_in.password)
     )
     listing_db = listing_crud.get(db, id=post_re_con['id'])
 
@@ -115,7 +115,7 @@ def test_delete_listing():
     assert listing_db is None
 
 
-def test_access_denied_put_listing():
+async def access_denied_put_listing():
     listing_in = get_random_listing()
     response = client.post(
         "/listings/",
@@ -126,14 +126,14 @@ def test_access_denied_put_listing():
     listing_in = get_random_listing()
     response_put = client.put(
         f"/listings/{post_re_con['id']}",
-        headers=headers2,
+        headers=await user_authentication_headers(client=client, username=global_user_in2.username, password=global_user_in2.password),
         content=listing_in.model_dump_json()
     )
     assert response.status_code == 201
     assert response_put.status_code == 403
 
 
-def test_access_denied_delete_listing():
+async def access_denied_delete_listing():
     listing_in = get_random_listing()
     response = client.post(
         "/listings/",
@@ -143,7 +143,7 @@ def test_access_denied_delete_listing():
     post_re_con = json.loads(response.content.decode('utf-8'))
     response_delete = client.delete(
         f"/listings/{post_re_con['id']}",
-        headers=headers2
+        headers=await user_authentication_headers(client=client, username=global_user_in2.username, password=global_user_in2.password)
     )
     assert response.status_code == 201
     assert response_delete.status_code == 403

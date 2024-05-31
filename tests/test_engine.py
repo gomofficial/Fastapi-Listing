@@ -2,18 +2,22 @@ from db import Base, get_db
 from main import app
 
 from fastapi.testclient import TestClient
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import DeclarativeBase, MappedAsDataclass
+from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
-
-SQLALCHEMY_DATABASE_URL = "sqlite:///./test.db"
-engine = create_engine(
+SQLALCHEMY_DATABASE_URL = "sqlite+aiosqlite:///./test.db"
+engine = create_async_engine(
     SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
 )
-TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+TestingSessionLocal = async_sessionmaker(
+                            bind=engine,
+                            autocommit=False,
+                            autoflush=False,
+                            expire_on_commit=False,
+                            )
 Base.metadata.create_all(bind=engine)
 
-def override_get_db():
+async def override_get_db():
     try:
         db = TestingSessionLocal()
         yield db
