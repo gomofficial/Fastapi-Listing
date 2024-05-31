@@ -31,6 +31,7 @@ db = TestingSessionLocal()
 global_user_db = UsersOperation.get_user_profile(db, username=global_user_in.username)
 global_user_db2 = UsersOperation.get_user_profile(db, username=global_user_in2.username)
 asyncio.run(db.close())
+
 # headers  = user_authentication_headers(client=client, username=global_user_in.username, password=global_user_in.password)
 # headers2 = user_authentication_headers(client=client, username=global_user_in2.username, password=global_user_in2.password)
 
