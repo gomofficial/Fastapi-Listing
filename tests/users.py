@@ -17,7 +17,7 @@ async def register():
         content=user_in.model_dump_json()
     )
     user_db = user_crud.get_user_profile(username=user_in.username)
-    db.close()
+    await db.close()
     assert response.status_code == 201
     assert user_db.email == user_in.email
 

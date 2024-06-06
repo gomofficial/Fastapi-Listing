@@ -4,6 +4,7 @@ from db import engine, Base
 from utils import (log, )
 from utils.utils import increase_count_file
 from contextlib import asynccontextmanager
+from utils._redis import *
 from fastapi import FastAPI
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from utils.celery_worker import weather_forcast
@@ -55,4 +56,13 @@ async def request_logger(request: Request, call_next):
     
     return response
 
+@app.middleware('http')
+async def validate_ip(request: Request, call_next):
 
+    # Exclude the login view from IP validation
+    if request.url.path != "/account/token":
+        # Check if IP is allowed
+        verify_device_ip(request)
+
+    # Proceed if IP is allowed
+    return await call_next(request)

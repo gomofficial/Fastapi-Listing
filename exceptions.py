@@ -44,10 +44,20 @@ class RateLimitException(HTTPException):
 
 class DeviceLimitException(HTTPException):
     def __init__(self):
-        self.status_code = status.HTTP_429_TOO_MANY_REQUESTS
+        self.status_code = status.HTTP_403_FORBIDDEN
         self.detail="Can not login with 2 or more devices"
 
 class AuthenticationException(HTTPException):
     def __init__(self):
-        self.status_code = status.HTTP_429_TOO_MANY_REQUESTS
+        self.status_code = status.HTTP_401_UNAUTHORIZED
         self.detail="you are not logged in"
+
+class TokenWhiteListException(HTTPException):
+    def __init__(self):
+        self.status_code = status.HTTP_403_FORBIDDEN
+        self.detail="token not whitelisted"
+
+class AllowedIPException(HTTPException):
+    def __init__(self):
+        self.status_code = status.HTTP_403_FORBIDDEN
+        self.detail="this IP address doesnt have permissions"
