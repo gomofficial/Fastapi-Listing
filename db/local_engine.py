@@ -7,9 +7,9 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import Session, sessionmaker
 from utils.secrets import password_manager
 from utils.enums import GenderEnum
-from settings import *
+from settings import settings
 
-SQLALCHEMY_DATABASE_URL = SQLALCHEMY_LOCAL_DATABASE_URL
+SQLALCHEMY_DATABASE_URL = settings.SQLALCHEMY_LOCAL_DATABASE_URL
 
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
 
