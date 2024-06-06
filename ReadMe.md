@@ -40,10 +40,10 @@ And navigate to `http://127.0.0.1:3000/`.
   $ docker-compose up
 ```
 
-then view the site at  http://localhost:8000/ 
+then view the site at  http://localhost:3000/ 
 
 ## API Docs 
-  navigate to `http://127.0.0.1:8000/docs/`
+  navigate to `http://127.0.0.1:3000/docs/`
 
 ## Features
  rest api using fastapi,
