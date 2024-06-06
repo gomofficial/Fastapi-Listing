@@ -77,7 +77,7 @@ async def update_user_profile(db_session: Annotated[AsyncSession, Depends(get_db
 @user_router.put("/change_password")
 async def update_user_password(db_session: Annotated[AsyncSession, Depends(get_db)],
                               data:PasswordChange = Body(embed=True),
-                              token_data:jwt.JWTPayload = Depends(JWTHandler.verify_token)):
+                              token_data:jwt.JWTPayload = Depends(JWTHandler.verify_token),):
     '''
         description : change password \n
         id : UUID "id of the listing" \n
@@ -107,7 +107,8 @@ async def user_delete_account(db_session: Annotated[AsyncSession, Depends(get_db
 
 
 @user_router.post("/token")
-async def authenticate(db_session: Annotated[AsyncSession, Depends(get_db)],
+async def authenticate(request: Request,
+                       db_session: Annotated[AsyncSession, Depends(get_db)],
                        form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
                        dependencies = Depends(rate_limit_user)):
     '''
@@ -121,13 +122,14 @@ async def authenticate(db_session: Annotated[AsyncSession, Depends(get_db)],
     token = await UsersOperation(db_session).login(form_data.username,form_data.password)
     payload = JWTResponsePayload(access_token=token)
     await set_device_token(token,form_data.username)
-
+    await set_device_ip(request)
     successful_login_notification(form_data.username)
     return payload
 
 @user_router.post("/logout")
-async def logout(db_session: Annotated[AsyncSession, Depends(get_db)],
-                              token_data:jwt.JWTPayload = Depends(JWTHandler.verify_token)):
+async def logout(request: Request,
+                db_session: Annotated[AsyncSession, Depends(get_db)],
+                token_data:jwt.JWTPayload = Depends(JWTHandler.verify_token),):
     '''
         description :\n
             logout view \n
@@ -136,5 +138,5 @@ async def logout(db_session: Annotated[AsyncSession, Depends(get_db)],
     '''
 
     await delete_key(token_data.username)
-
+    await delete_ip(request)
     return {"message" : "logout successfully"}

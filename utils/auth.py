@@ -53,7 +53,8 @@ class JWTHandler:
         except JWTError as e:
             print(e)
             raise credentials_exception
-        print(await verify_device(jwt_token,username))
+        is_whitlisted   = await token_whitelist(jwt_token,username)
+        verified_device = await verify_device(jwt_token,username)
         stmt = select(User).where(User.username==username)
         async with SessionLocal() as session:
             user = (await session.execute(stmt)).scalars().first()
