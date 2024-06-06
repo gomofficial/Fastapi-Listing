@@ -3,10 +3,8 @@ from celery import Celery
 from dotenv import load_dotenv
 import requests
 import csv
+from settings import settings
 
-
-
-WHEATHER_API_KEY  = "71c76fe9c1b84c2b86c180859242005"
 
 
 celery = Celery(__name__)
@@ -16,7 +14,7 @@ celery.conf.result_backend = os.environ.get("CELERY_RESULT_BACKEND")
 
 @celery.task(name="weather_forcast")
 def weather_forcast(days=14,city="sari"):
-    WHEATHER_API_URL  = f"http://api.weatherapi.com/v1/forecast.json?key={WHEATHER_API_KEY}&q={city}&days={str(days)}"
+    WHEATHER_API_URL  = f"http://api.weatherapi.com/v1/forecast.json?key={settings.WHEATHER_API_KEY}&q={city}&days={str(days)}"
     json_response = requests.get(WHEATHER_API_URL).json()
 
     forcats_list  = json_response.get("forecast").get('forecastday')

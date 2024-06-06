@@ -9,12 +9,12 @@ from alembic import context
 import os, sys
 from dotenv import load_dotenv
 
-from settings import SQLALCHEMY_DATABASE_URL
+from settings import settings
 
 config = context.config
 
 
-config.set_main_option("sqlalchemy.url", SQLALCHEMY_DATABASE_URL)
+config.set_main_option("sqlalchemy.url", settings.SQLALCHEMY_DATABASE_URL)
 
 
 if config.config_file_name is not None:

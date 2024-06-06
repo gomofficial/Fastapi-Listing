@@ -4,9 +4,9 @@ import jwt
 from fastapi import Depends, status
 from fastapi.exceptions import HTTPException
 from schema.jwt import JWTPayload, JWTResponsePayload
-from settings import *
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from jose import JWTError
+from settings import settings
 from sqlalchemy import select
 from db.models import User
 from db.engine import SessionLocal
@@ -17,9 +17,9 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/account/token")
 class JWTHandler:
     @staticmethod
     def generate(username: str, exp_timestamp: int | None = None) -> JWTResponsePayload:
-        expire_time = ACCESS_TOKEN_EXPIRE_MINUTES
+        expire_time = settings.ACCESS_TOKEN_EXPIRE_MINUTES
 
-        secret_key = SECRET_KEY
+        secret_key = settings.SECRET_KEY
 
         expires_delta = datetime.utcnow() + timedelta(minutes=expire_time)
 
@@ -27,7 +27,7 @@ class JWTHandler:
             "exp": exp_timestamp if exp_timestamp else expires_delta,
             "username": username,
         }
-        encoded_jwt = jwt.encode(to_encode, secret_key, ALGORITHM)
+        encoded_jwt = jwt.encode(to_encode, secret_key, settings.ALGORITHM)
         return encoded_jwt
 
     @staticmethod
@@ -41,7 +41,7 @@ class JWTHandler:
         if not jwt_token:
             raise credentials_exception
         try:
-            token_data = jwt.decode(jwt_token, SECRET_KEY, algorithms=[ALGORITHM])
+            token_data = jwt.decode(jwt_token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
             if datetime.fromtimestamp(token_data["exp"])+timedelta(days=1) < datetime.now():
                 raise credentials_exception
             username: str = token_data.get("username")
