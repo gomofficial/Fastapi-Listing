@@ -22,8 +22,7 @@ class UsersOperation:
         user.gender          = data["gender"]
         async with self.db_session as session:
             try:
-                print(user.username)
-                print(type(user))
+
                 session.add(user)
                 await session.commit()
             except IntegrityError:

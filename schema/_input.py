@@ -59,7 +59,6 @@ class PasswordChange(BaseModel):
     @model_validator(mode='before')
     def check_passwords_match(cls, values):
         old_pwd, pw1, pw2 = values.get('old_password'), values.get('password_1'), values.get('password_2')
-        print(values)
         if pw1 != pw2:
             raise ValueError("Passwords should match")
         if len(pw1) < 8:

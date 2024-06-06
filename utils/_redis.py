@@ -28,7 +28,6 @@ async def rate_limit_user(request: Request):
     if current_count > 5:
         raise RateLimitException
     
-    print(request.client.host)
     return True
 
 
