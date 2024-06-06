@@ -17,7 +17,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/account/token")
 class JWTHandler:
     @staticmethod
     def generate(username: str, exp_timestamp: int | None = None) -> JWTResponsePayload:
-        expire_time = settings.ACCESS_TOKEN_EXPIRE_MINUTES
+        expire_time = str(settings.ACCESS_TOKEN_EXPIRE_MINUTES)
 
         secret_key = settings.SECRET_KEY
 

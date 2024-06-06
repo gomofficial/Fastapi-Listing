@@ -15,12 +15,14 @@ services:
       - .:/app
     ports:
       - 3000:3000
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=post_db
-      - DATABASE_URL=postgresql+asyncpg://postgres:password@db:5432/post_db
-      - SECRET_KEY=89023f0j2039jf90jkakmciumcses9mcs99mcs93c48ym72tmarf737mc7h47wna4c8791289h8f1h3f8h376fh8bf4
+    env_file:
+      - .env
+    # environment:
+    #   - POSTGRES_USER=postgres
+    #   - POSTGRES_PASSWORD=password
+    #   - POSTGRES_DB=post_db
+    #   - DATABASE_URL=postgresql+asyncpg://postgres:password@db:5432/post_db
+    #   - SECRET_KEY=89023f0j2039jf90jkakmciumcses9mcs99mcs93c48ym72tmarf737mc7h47wna4c8791289h8f1h3f8h376fh8bf4
     depends_on:
       - db
     links:
@@ -30,11 +32,13 @@ services:
     image: postgres:latest
     container_name: postgres
     restart: always
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=post_db
-      - PGDATA = /var/lib/postgresql/data
+    # environment:
+    #   - POSTGRES_USER=postgres
+    #   - POSTGRES_PASSWORD=password
+    #   - POSTGRES_DB=post_db
+    #   - PGDATA = /var/lib/postgresql/data
+    env_file:
+      - .env
     volumes:
     - postgres_data:/var/lib/postgresql/data
     expose:
@@ -46,9 +50,11 @@ services:
     command: celery -A utils.celery_worker.celery worker --loglevel=info
     volumes:
       - .:/app
-    environment:
-      - CELERY_BROKER_URL=redis://redis:6379/0
-      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    env_file:
+      - .env
+    # environment:
+    #   - CELERY_BROKER_URL=redis://redis:6379/0
+    #   - CELERY_RESULT_BACKEND=redis://redis:6379/0
     depends_on:
       - web
       - redis
@@ -57,11 +63,13 @@ services:
     container_name: pgadmin
     image: dpage/pgadmin4:latest
     restart: always
-    environment:
-      - PGADMIN_DEFAULT_EMAIL=pgadmin@pgadmin.org
-      - PGADMIN_DEFAULT_PASSWORD=admin
+    # environment:
+    #   - PGADMIN_DEFAULT_EMAIL=pgadmin@pgadmin.org
+    #   - PGADMIN_DEFAULT_PASSWORD=admin
     ports:
       - "5050:80"
+    env_file:
+      - .env
     volumes:
     - pgadmin-data:/var/lib/pgadmin
     depends_on:
