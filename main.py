@@ -56,13 +56,14 @@ async def request_logger(request: Request, call_next):
     
     return response
 
+
 @app.middleware('http')
 async def validate_ip(request: Request, call_next):
 
     # Exclude the login view from IP validation
-    if request.url.path != "/account/token":
+    if request.url.path not in ["/account/token", "/account/register", "/account/", "/listing/all"]:
         # Check if IP is allowed
-        verify_device_ip(request)
+        await verify_device_ip(request)
 
     # Proceed if IP is allowed
     return await call_next(request)

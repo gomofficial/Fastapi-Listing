@@ -5,6 +5,7 @@ class Settings(BaseSettings):
     
     class Config:
         env_file = ".env"
+        extra    = 'ignore'
 
     SECRET_KEY:str
     SQLALCHEMY_SQLITE_DATABASE_URL:str
@@ -14,15 +15,6 @@ class Settings(BaseSettings):
     ALGORITHM:str
     REDIS_URL:str
     WHEATHER_API_KEY:str
-    POSTGRES_USER:str
-    POSTGRES_PASSWORD:str
-    POSTGRES_DB:str
-    DATABASE_URL:str
-    PGDATA:str
-    CELERY_BROKER_URL:str
-    CELERY_RESULT_BACKEND:str
-    PGADMIN_DEFAULT_EMAIL:str
-    PGADMIN_DEFAULT_PASSWORD:str
 
 settings = Settings()
 
