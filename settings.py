@@ -15,7 +15,20 @@ class Settings(BaseSettings):
     ALGORITHM:str
     REDIS_URL:str
     WHEATHER_API_KEY:str
+    REDIS_URL:str
+
+class DBSettings(BaseSettings):
+    
+    class Config:
+        env_file = ".env"
+        extra    = 'ignore'
+
+    POSTGRES_USER:str
+    POSTGRES_PASSWORD:str
+    POSTGRES_DB:str
+    PGDATA:str
+
 
 settings = Settings()
 
-
+db_settings = DBSettings()

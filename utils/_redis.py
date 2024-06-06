@@ -5,9 +5,9 @@ from exceptions import RateLimitException, DeviceLimitException, TokenWhiteListE
 from fastapi import Depends
 from .auth import JWTHandler
 from schema import jwt
+from settings import settings
 
-
-redis = Redis(host='redis', port=6379, db=0)
+redis = Redis(host=settings.REDIS_URL, port=6379, db=0)
 
 
 async def rate_limit_user(request: Request):
