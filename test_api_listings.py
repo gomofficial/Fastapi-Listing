@@ -19,13 +19,13 @@ global_response2 = client.post(
 )
 
 
-def get_all_listings():
+def test_get_all_listings():
    # user_input = get_random_user()
    response = client.get("/listing/all")
    assert response.status_code == 200
 
 
-def read_listings():
+def test_read_listings():
     listing_in = get_random_listing()
 
     response = client.post(
@@ -45,7 +45,7 @@ def read_listings():
     assert post_re_con in get_re_con
 
 
-def read_single_listing():
+def test_read_single_listing():
    listing_in = get_random_listing()
    response = client.post(
       "/listing",
@@ -60,7 +60,7 @@ def read_single_listing():
    assert response_get.status_code == 200
 
 
-def put_listing():
+def test_put_listing():
     listing_in = get_random_listing()
     response = client.post(
         "/listing",
@@ -81,7 +81,7 @@ def put_listing():
     assert post_re_con['address'] != put_re_con['address']
 
 
-def delete_listing():
+def test_delete_listing():
     listing_in = get_random_listing()
     response = client.post(
         "/listings",
