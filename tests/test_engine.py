@@ -15,7 +15,6 @@ engine = create_async_engine(
 )
 TestingSessionLocal = async_sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-print(settings.SQLALCHEMY_SQLITE_DATABASE_URL)
 
 # asyncio(Base.metadata.create_all)
 
