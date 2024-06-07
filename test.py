@@ -9,4 +9,3 @@ from main import app
 import asyncio
 from tests import users
 
-users.test_user_register()

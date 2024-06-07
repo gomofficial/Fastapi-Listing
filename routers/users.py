@@ -11,7 +11,7 @@ from utils.utils import successful_login_notification
 from utils import rate_limit_user
 from fastapi import Request
 from schema.jwt import JWTResponsePayload
-from utils._redis import *
+from utils.redis_utils import *
 
 user_router = APIRouter()
 

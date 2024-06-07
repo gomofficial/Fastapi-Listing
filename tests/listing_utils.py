@@ -8,3 +8,4 @@ def get_random_listing():
         available_now=True,
         type=TypeEnum.APARTMENT
     )
+

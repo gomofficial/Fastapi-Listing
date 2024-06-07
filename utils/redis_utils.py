@@ -3,8 +3,6 @@ from fastapi import Request
 from datetime import datetime, timedelta
 from exceptions import RateLimitException, DeviceLimitException, TokenWhiteListException, AllowedIPException
 from fastapi import Depends
-from .auth import JWTHandler
-from schema import jwt
 from settings import settings
 
 redis = Redis(host=settings.REDIS_URL, port=6379, db=0)
@@ -49,11 +47,12 @@ async def verify_device(token, username):
     return True
 
 
-async def token_whitelist(token, username):
+async def token_whitelist(username):
     redis_key = f"{username}"
     device_token =await redis.get(redis_key)
     if device_token is None:
         raise TokenWhiteListException()
+    return True
 
 
 async def set_device_ip(request:Request):

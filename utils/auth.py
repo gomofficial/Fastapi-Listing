@@ -10,14 +10,14 @@ from settings import settings
 from sqlalchemy import select
 from db.models import User
 from db.engine import SessionLocal
-from ._redis import *
+from .redis_utils import token_whitelist, verify_device
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/account/token")
 
 class JWTHandler:
     @staticmethod
     def generate(username: str, exp_timestamp: int | None = None) -> JWTResponsePayload:
-        expire_time = str(settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+        expire_time = int(settings.ACCESS_TOKEN_EXPIRE_MINUTES)
 
         secret_key = settings.SECRET_KEY
 
@@ -53,8 +53,8 @@ class JWTHandler:
         except JWTError as e:
             print(e)
             raise credentials_exception
-        is_whitlisted   = await token_whitelist(jwt_token,username)
-        verified_device = await verify_device(jwt_token,username)
+        await token_whitelist(username)
+        await verify_device(jwt_token,username)
         stmt = select(User).where(User.username==username)
         async with SessionLocal() as session:
             user = (await session.execute(stmt)).scalars().first()

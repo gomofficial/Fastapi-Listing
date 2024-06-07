@@ -40,3 +40,4 @@ def get_random_user_update():
     
 def get_user_update(**kwargs):
     return UpdateUserProfile(**kwargs)
+
