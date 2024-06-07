@@ -18,7 +18,7 @@ user_router = APIRouter()
  
 @user_router.post('/register')
 async def register( db_session: Annotated[AsyncSession, Depends(get_db)],
-                    data: RegisterInput = Body(embed=True)):
+                    data: RegisterInput = Body()):
     '''
         description : creating a user profile \n
         id : UUID "id of the listing" \n
@@ -54,7 +54,7 @@ async def get_user_profile(db_session: Annotated[AsyncSession, Depends(get_db)],
 
 @user_router.put("/update")
 async def update_user_profile(db_session: Annotated[AsyncSession, Depends(get_db)],
-                              data:UpdateUserProfile = Body(embed=True),
+                              data:UpdateUserProfile = Body(),
                               token_data:jwt.JWTPayload = Depends(JWTHandler.verify_token)):
     '''
         description : updating user profile \n
@@ -76,7 +76,7 @@ async def update_user_profile(db_session: Annotated[AsyncSession, Depends(get_db
 
 @user_router.put("/change_password")
 async def update_user_password(db_session: Annotated[AsyncSession, Depends(get_db)],
-                              data:PasswordChange = Body(embed=True),
+                              data:PasswordChange = Body(),
                               token_data:jwt.JWTPayload = Depends(JWTHandler.verify_token),):
     '''
         description : change password \n

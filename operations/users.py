@@ -28,7 +28,7 @@ class UsersOperation:
             except IntegrityError:
                 raise UserAlreadyExists
 
-        return UserOutput.model_validate(user.__dict__)
+            return UserOutput.model_validate(user.__dict__)
     
 
 
