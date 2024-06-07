@@ -27,7 +27,7 @@ def read_listings():
 
     response = client.post(
         "/listing",
-        content=listing_in.model_dump_json(),
+        json=listing_in.model_dump_json(),
         headers= user_authentication_headers(client=client, username=global_user_in.username, password=global_user_in.password)
     )
     response_get = client.get(
@@ -45,7 +45,7 @@ def read_single_listing():
    listing_in = get_random_listing()
    response = client.post(
       "/listing",
-      content=listing_in.model_dump_json(),
+      json=listing_in.model_dump_json(),
       headers=user_authentication_headers(client=client, username=global_user_in.username, password=global_user_in.password)
    )
    post_re_con = json.loads(response.content.decode('utf-8'))
@@ -60,14 +60,14 @@ def put_listing():
     listing_in = get_random_listing()
     response = client.post(
         "/listing",
-        content=listing_in.model_dump_json(),
+        json=listing_in.model_dump_json(),
         headers=user_authentication_headers(client=client, username=global_user_in.username, password=global_user_in.password)
     )
     post_re_con = json.loads(response.content.decode('utf-8'))
     listing_in = get_random_listing()
     response_put = client.put(
         f"/listing/?id={post_re_con['id']}",
-        content=listing_in.model_dump_json(),
+        json=listing_in.model_dump_json(),
         headers=user_authentication_headers(client=client, username=global_user_in.username, password=global_user_in.password)
     )
     put_re_con = json.loads(response_put.content.decode('utf-8'))
@@ -80,7 +80,7 @@ def delete_listing():
     listing_in = get_random_listing()
     response = client.post(
         "/listings",
-        content=listing_in.model_dump_json(),
+        json=listing_in.model_dump_json(),
         headers=user_authentication_headers(client=client, username=global_user_in.username, password=global_user_in.password)
     )
     post_re_con = json.loads(response.content.decode('utf-8'))
