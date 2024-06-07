@@ -20,11 +20,11 @@ def user_authentication_headers(*, client: TestClient, username: str, password: 
 def get_random_user():
     pwd = random_lower_string()+"S"
     return RegisterInput(
-        username  =   random_lower_string(),
+        username  =  random_lower_string(),
         full_name =  random_lower_string(),
-        email     =      random_email(),
+        email     =  random_email(),
         password  =  pwd,
-        gender    =     GenderEnum.MALE,
+        gender    =  GenderEnum.MALE,
     )
 
 
