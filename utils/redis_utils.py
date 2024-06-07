@@ -10,7 +10,7 @@ redis = Redis(host=settings.REDIS_URL, port=6379, db=0)
 
 async def rate_limit_user(request: Request):
     userIp = request.client.host
-    # Increment our most recent redis key
+
     now = datetime.now()
     current_minute = now.strftime("%Y-%m-%dT%H:%M")
 
@@ -18,11 +18,9 @@ async def rate_limit_user(request: Request):
     current_count = await redis.incr(redis_key)
 
 
-    # If we just created a new key (count is 1) set an expiration
     if current_count == 1:
         await redis.expireat(name=redis_key, when=now + timedelta(minutes=1))
     
-    # Check rate limit
     if current_count > 5:
         raise RateLimitException
     
@@ -61,7 +59,7 @@ async def set_device_ip(request:Request):
 
 
 async def verify_device_ip(request:Request):
-    if redis.sismember('ip_set', str(request.client.host)):
+    if await redis.sismember('ip_set', str(request.client.host)):
         return True
     raise TokenWhiteListException()
 
@@ -72,4 +70,4 @@ async def delete_key(key:str):
 
 
 async def delete_ip(request:Request):
-    redis.srem('ip_set', str(request.client.host))
+    await redis.srem('ip_set', str(request.client.host))
