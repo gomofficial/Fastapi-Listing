@@ -4,7 +4,7 @@ from db import engine, Base
 from utils import (log, )
 from utils.utils import increase_count_file
 from contextlib import asynccontextmanager
-from utils._redis import *
+from utils.redis_utils import *
 from fastapi import FastAPI
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from utils.celery_worker import weather_forcast
