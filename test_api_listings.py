@@ -18,7 +18,7 @@ global_response2 = client.post(
     f"/account/register",
     content=global_user_in2.model_dump_json()
 )
-# @pytest_asyncio.fixture()
+
 
 def test_get_all_listings():
    # user_input = get_random_user()
@@ -44,7 +44,6 @@ def test_read_listings():
     assert response.status_code == 201
     assert response_get.status_code == 200
     assert post_re_con in get_re_con
-
 
 
 def test_read_single_listing():

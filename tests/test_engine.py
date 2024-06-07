@@ -9,7 +9,9 @@ from main import app
 from utils.redis_utils import redis
 import asyncio
 
+
 redis.connection_pool.connection_kwargs['host'] = '127.0.0.1'
+
 
 engine = create_async_engine(
     settings.SQLALCHEMY_SQLITE_DATABASE_URL,
@@ -18,9 +20,11 @@ engine = create_async_engine(
 )
 TestingSessionLocal = async_sessionmaker(autocommit=False, autoflush=False, bind=engine, expire_on_commit=False)
 
+async def init_db():
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
 
-# asyncio(engine.begin() metaBase.metadata.create_all)
-
+asyncio.run(init_db())
 
 async def override_get_db():
     try:
@@ -30,7 +34,6 @@ async def override_get_db():
         await db.close()
 
 app.dependency_overrides[get_db] = override_get_db
-# app.dependency_overrides[lifespan] =  
 
 client = TestClient(
     app,

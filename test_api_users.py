@@ -1,6 +1,6 @@
 from tests.user_utils import  user_authentication_headers, get_random_user_update, get_random_user
 from tests.test_engine import client
-import asyncio
+
 
 def test_register():
    user_input = get_random_user()
@@ -29,7 +29,7 @@ def test_login():
     assert response.status_code==200
     assert login_response.status_code==200
 
-
+@pytest.fixture
 def test_no_login():
     user_in = get_random_user()
     response = client.post(f"/account/register",content=user_in.model_dump_json())
@@ -37,11 +37,10 @@ def test_no_login():
         f"/account/token",
         data={
             'username': user_in.username,
-            'password': user_in.password+' fake'
+            'password': user_in.password+'fake'
         })
     assert response.status_code==200
     assert login_response.status_code==400
-
 
 def test_read_user():
     user_in = get_random_user()

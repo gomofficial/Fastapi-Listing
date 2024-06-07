@@ -1,8 +1,7 @@
 from typing import Dict
 from datetime import datetime
-
+import json
 from fastapi.testclient import TestClient
-
 from .test_utils import random_email, random_lower_string, random_date
 from schema._input import RegisterInput, UpdateUserProfile 
 from utils.enums import GenderEnum
@@ -30,12 +29,11 @@ def get_random_user():
 
 def get_random_user_update():
     re = UpdateUserProfile(
-        username =   random_lower_string(),
+        username =  random_lower_string(),
         full_name=  random_lower_string(),
-        email    =      random_email(),
-        gender   =     GenderEnum.MAIL.name,
+        email    =  random_email(),
+        gender   =  GenderEnum.MALE,
     )
-    del re.password
     return re
     
 def get_user_update(**kwargs):
