@@ -11,16 +11,19 @@ global_response = client.post(
     f"/account/register",
     json=global_user_in.model_dump_json()
 )
+
 global_user_in2 = get_random_user()
 global_response2 = client.post(
     f"/account/register",
     json=global_user_in2.model_dump_json()
 )
 
+
 def get_all_listings():
    # user_input = get_random_user()
    response = client.get("/listing/all")
    assert response.status_code == 200
+
 
 def read_listings():
     listing_in = get_random_listing()
@@ -40,7 +43,8 @@ def read_listings():
     assert response.status_code == 201
     assert response_get.status_code == 200
     assert post_re_con in get_re_con
-   
+
+
 def read_single_listing():
    listing_in = get_random_listing()
    response = client.post(
@@ -75,6 +79,7 @@ def put_listing():
     assert response.status_code == 200
     assert response_put.status_code == 200
     assert post_re_con['address'] != put_re_con['address']
+
 
 def delete_listing():
     listing_in = get_random_listing()
