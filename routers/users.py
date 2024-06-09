@@ -114,8 +114,8 @@ async def authenticate(request: Request,
     '''
         description : delete account \n
         body : \n
-            username : user account username
-            password : user account password
+            username : user account username\n
+            password : user account password\n
         output :\n
             access token
     '''
