@@ -3,7 +3,7 @@ from celery import Celery
 from dotenv import load_dotenv
 import requests
 import csv
-from settings import celery_settings
+from settings import celery_settings, settings
 
 
 
