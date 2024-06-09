@@ -83,11 +83,20 @@ class ListingOperation:
                              createdAt=listing.createdAt, updatedAt=listing.updatedAt)
         
 
-    async def delete(self, id:UUID)-> None:
-
+    async def delete(self, username, id:UUID)-> None:
+        query = sa.select(Listing).where(Listing.id == id)
         delete_query = sa.delete(Listing).where(Listing.id == id)
 
+
         async with self.db_session as session:
+            listing = await session.scalar(query)
+
+            if listing is None:
+                raise ListingNotFoundError
+
+            if listing.owner.username != username:
+                raise InvalidPermission
+    
             await session.execute(delete_query)
             await session.commit()
     

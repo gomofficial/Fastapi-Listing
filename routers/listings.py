@@ -76,7 +76,6 @@ async def update(db_session: Annotated[AsyncSession, Depends(get_db)], id:UUID,
     return listings
 
 @listing_router.delete("/")
-
 async def delete(db_session: Annotated[AsyncSession, Depends(get_db)], id:UUID,
                                token_data:jwt.JWTPayload = Depends(JWTHandler.verify_token)):
     '''
@@ -88,7 +87,7 @@ async def delete(db_session: Annotated[AsyncSession, Depends(get_db)], id:UUID,
         output :\n 
             listing
     '''
-    listings = await ListingOperation(db_session).delete(id)
+    listings = await ListingOperation(db_session).delete(token_data.username, id)
 
     return listings
 
