@@ -53,12 +53,12 @@ class ListingOperation:
         listing_query = sa.select(Listing).where(Listing.id == id)
 
         async with self.db_session as session:
-            listings = await session.scalars(listing_query)
+            listing = await session.scalar(listing_query)
 
-        return [ListingOutput(id=listing.id,
+            return ListingOutput(id=listing.id,
                              type=listing.type, availableNow=listing.availableNow,
                              owner=listing.owner.username, address=listing.address,
-                             createdAt=listing.createdAt, updatedAt=listing.updatedAt) for listing in listings ]
+                             createdAt=listing.createdAt, updatedAt=listing.updatedAt)
     
 
     async def update(self, id, username ,data):
@@ -99,4 +99,5 @@ class ListingOperation:
     
             await session.execute(delete_query)
             await session.commit()
+    
     
