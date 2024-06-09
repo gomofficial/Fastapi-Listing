@@ -41,7 +41,7 @@ async def verify_device(token, username):
     redis_key = f"{username}"
     device_token =await redis.get(redis_key)
     if token != str(device_token.decode()):
-        raise DeviceLimitException()
+        raise DeviceLimitException
     return True
 
 
@@ -49,7 +49,7 @@ async def token_whitelist(username):
     redis_key = f"{username}"
     device_token =await redis.get(redis_key)
     if device_token is None:
-        raise TokenWhiteListException()
+        raise TokenWhiteListException
     return True
 
 
