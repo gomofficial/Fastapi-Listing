@@ -61,7 +61,7 @@ async def set_device_ip(request:Request):
 async def verify_device_ip(request:Request):
     if await redis.sismember('ip_set', str(request.client.host)):
         return True
-    raise TokenWhiteListException()
+    raise TokenWhiteListException
 
 
 async def delete_key(key:str):
