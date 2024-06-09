@@ -1,7 +1,5 @@
-from tests.user_utils import  user_authentication_headers, get_random_user_update, get_random_user
-from tests.test_engine import client
-from tests.test_engine import TestingSessionLocal
 from tests.user_utils import  user_authentication_headers, get_random_user
+from tests.test_engine import client
 from tests.listing_utils import get_random_listing
 import pytest
 import json
