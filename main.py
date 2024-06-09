@@ -60,12 +60,12 @@ async def request_logger(request: Request, call_next):
 @app.middleware('http')
 async def validate_ip(request: Request, call_next):
 
-    response = await call_next(request)
-
     if request.url.path not in ["/account/token", "/account/register", "/account/", "/listing/all"]:
         try:
             await verify_device_ip(request)
         except Exception as e:
             return JSONResponse(status_code=403, content={'detail': str(e)})
+        
+    response = await call_next(request)
         
     return response

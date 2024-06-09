@@ -54,11 +54,13 @@ async def token_whitelist(username):
 
 
 async def set_device_ip(request:Request):
+    print(str(request.client.host))
     await redis.sadd('ip_set', str(request.client.host))
 
 
 
 async def verify_device_ip(request:Request):
+    print(str(request.client.host))
     if await redis.sismember('ip_set', str(request.client.host)):
         return True
     raise AllowedIPException
