@@ -8,7 +8,7 @@ from utils.redis_utils import *
 from fastapi import FastAPI
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from utils.celery_worker import weather_forcast
-
+from fastapi.responses import JSONResponse
 
 app = FastAPI()
 
@@ -60,10 +60,12 @@ async def request_logger(request: Request, call_next):
 @app.middleware('http')
 async def validate_ip(request: Request, call_next):
 
-    # Exclude the login view from IP validation
-    if request.url.path not in ["/account/token", "/account/register", "/account/", "/listing/all"]:
-        # Check if IP is allowed
-        await verify_device_ip(request)
+    response = await call_next(request)
 
-    # Proceed if IP is allowed
-    return await call_next(request)
+    if request.url.path not in ["/account/token", "/account/register", "/account/", "/listing/all"]:
+        try:
+            await verify_device_ip(request)
+        except Exception as e:
+            return JSONResponse(status_code=403, content={'detail': str(e)})
+        
+    return response
