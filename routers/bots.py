@@ -5,7 +5,7 @@ bots_router = APIRouter()
 
 
 @bots_router.post('/')
-async def register(days:int, city:str):
+async def get_weather(days:int, city:str):
     task = weather_forcast.delay(days=days, city=city)
 
     return {"taskId":task.task_id, "message": "your task is in task queue and will be saved in Forcast.csv"}
