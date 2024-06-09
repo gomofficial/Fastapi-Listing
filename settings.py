@@ -17,18 +17,25 @@ class Settings(BaseSettings):
     WHEATHER_API_KEY:str
     REDIS_URL:str
 
+
 class DBSettings(BaseSettings):
-    
     class Config:
         env_file = ".env"
         extra    = 'ignore'
-
     POSTGRES_USER:str
     POSTGRES_PASSWORD:str
     POSTGRES_DB:str
     PGDATA:str
 
+class CelerySettings(BaseSettings):
+    class Config:
+        env_file = ".env"
+        extra    = 'ignore'
+    CELERY_BROKER_URL:str
+    CELERY_RESULT_BACKEND:str
 
 settings = Settings()
 
 db_settings = DBSettings()
+
+celery_settings = CelerySettings()
