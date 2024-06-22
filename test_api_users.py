@@ -29,8 +29,7 @@ def test_login():
     assert response.status_code==200
     assert login_response.status_code==200
 
-@pytest.fixture
-def test_no_login():
+git def test_no_login():
     user_in = get_random_user()
     response = client.post(f"/account/register",content=user_in.model_dump_json())
     login_response = client.post(
